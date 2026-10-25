@@ -5,7 +5,7 @@ project:
   name: YA Fixture Website
   slug: ya-fixture
   description: >
-    Non-Subora acceptance fixture for runsub.yaml schedules and overrides.
+    Non-Subora acceptance fixture for runsub.yaml schedules and overrides (drift probe RS-86).
 
 agents:
   - id: repo-audit
