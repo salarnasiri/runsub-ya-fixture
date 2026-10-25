@@ -1,0 +1,58 @@
+# YA live fixture (RS-86) — fictional site; not Subora.
+version: 1
+
+project:
+  name: YA Fixture Website
+  slug: ya-fixture
+  description: >
+    Non-Subora acceptance fixture for runsub.yaml schedules and overrides.
+
+agents:
+  - id: repo-audit
+    kind: maintenance
+    prompt: |
+      Scan the repository for obvious Python and JSON syntax issues.
+      List affected paths only; do not modify files or print secrets.
+
+  - id: weekly-content
+    kind: content
+    prompt_file: runsub.d/weekly-content.md
+
+workflows:
+  - id: nightly-audit
+    steps:
+      - agent: repo-audit
+    schedule:
+      cron: "0 3 * * *"
+      timezone: Europe/London
+      missed: once
+
+  - id: monday-brief
+    steps:
+      - agent: weekly-content
+    schedule:
+      cron: "0 9 * * 1"
+      timezone: Europe/London
+      missed: skip
+
+  # YA live acceptance: fires every minute so enqueue can be proven without waiting overnight.
+  - id: lab-every-minute
+    steps:
+      - agent: repo-audit
+    schedule:
+      cron: "* * * * *"
+      timezone: UTC
+      missed: once
+
+services:
+  - id: web
+    role: http
+    description: Public website process
+
+  - id: worker
+    role: queue
+    description: Background job runner
+
+  - id: crawler
+    role: ingest
+    description: Periodic fetch worker
