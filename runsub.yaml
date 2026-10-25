@@ -56,3 +56,5 @@ services:
   - id: crawler
     role: ingest
     description: Periodic fetch worker
+
+# drift-probe rs86 20261025T095435Z
